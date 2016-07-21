@@ -1,0 +1,411 @@
+*Programm zur Erstellung einer Org-hmtl-Datei*
+* Vorwort
+** Was verstehe ich unter Org-html-Datei?
+Im org-mode des emacs gibt es die Funktion Textinhalte, die zu einer
+Überschrift gehören auszublenden.  Außerdem ist eine einfache
+Strukturierung der Überschriften möglich, indem vor die Überschrift
+entsprechend ihrer Hirachie in der Dokumentstruktur *-Symbole gesetzt
+werden. 
+Diese Dokumente werden als Klartext gespeichert.
+Direkt aus dem org-mode des emacs heraus ist es möglich, die Datei als
+HTML-Datei zu exportieren.  Allerdings bekommt die HTML-Datei zwar ein
+Ihaltsverzeichnis mit der Dokumetstruktur, allerdings ist die
+Komfortable Funktion des ausgeblendeten Textes nicht mehr vorhanden.
+Genau diese Fähigkeit soll die Org-html-Datei besitzen.
+** Wozu alles in HTML?
+Natürlich könnte ich einfach den Org-mode des emacs sowohl zum
+Erfassen als auch zum betrachten nutzen, allerdings stehen mir dann
+die Inhalte leider nicht online zur Verfügung. 
+Genau das möchte ich mit der HTML-Datei ermöglichen.
+
+* Die Idee
+** Technische Grundlage
+Es ist möglich mit Hilfe von Javascript einer HTML-Datei dieselbe
+Funktionalität zu geben, wie man es strukturmäßig vom org-mode gewöhnt
+ist. Dazu werden die jeweils auszublendeten Bereich zwischen
+DIV-Elementen mit bestimmten ID's geschachtelt.
+*** Script
+**** wo eingebunden
+Im Kopf der HTML-Datei wird ein Script in die Datei eingebunden,
+welches 2 Funktionen hat.
+**** Funktionen
+***** onload  
+Die erste Funktion wird dem Body als onload übergeben.
+Sie sorgt dafür, dass die verschieden Inhalte ausgeblendet werden.
+Unter anderm auch eine Ausgabe, die nur zur Information dient, falls
+JavaScript deaktiviert ist. Desweiteren auch alle markierten (mit dem Namen
+"aus" versehenen) DIV's.
+***** onclick
+Die 2. Funktion sorgt dafür, dass beim Klicken auf die Überschrift der dazugehörige Inhalt
+angezeigt wird. Dafür wird als Überschrift kein hN-Element genutzt,
+sondern das a-Element, da dieses von Hause aus ein Klickereignis
+(onclick) besitzt.
+
+*** CSS
+Weiterhin wird im Kopf unter der CSS-Datei für die gesamte Seite eine
+zusätzliche CSS-Datei eingebunden, die die verschiedenen Hirachien der
+als Überschrift genutzten a-Elemente entsprechend formatieren sollen.
+Dazu wird jedem a-Element eine Klasse etsprechend seiner Hirachie
+zugeordnet:  class="grad1" ... class="grad10"
+*** Dokumentstruktur
+Nun werden die zu jeder Überschrift gehörenden Elemente in
+DIV-Elemente geschachtelt, deren ID beim onklick-Ereignes des
+zugehörigen a-Elements der Funktion zum ein- bzw. ausblenden übergeben
+wird. 
+
+** Problem
+Diese Dokumentstruktur mit den verschachtelten DIV's und den
+dazugehörigen a-Elementen ist recht aufwendig in Ihrer Erstellung.
+** Daraus folgt folgende Idee
+Die Erfassung der Texte erfolgt mit dem emacs org-mode.
+Ein Programm soll den so entstehenden Klartext in eine HTML-Datei umwandeln,
+die die oben beschriebenen technischen Details hat.
+
+* Umsetzung
+** Analyse
+*** Struktur
+**** org-mode
+***** Verschachtelung mit Sternchen
+****** TODO Die Unterpunkte können Todo-Einträge haben
+Das ist allerdings egal, da dies nur ein Wort vor die Eigentliche Überschrift stellt
+Und somit als Teil dieser betrachtet werden kann.
+***** [#B] Prioritäten
+Auch diese werden im Klartext, genau so dargestellt, wie hier erfasst.
+***** Listen
+- Listen durch
+  - Minuszeichen
+    + Zeichen
+- Listen werden durch Einrückung verschachtelt
+  1. Listen können auch Nummerierungen enthalten
+  2. Als Unterpunkte sind auch Sternchen möglich
+     * Unterpunkt 1
+     * Unterpunkt 2
+  Das ist kein Listenpunkt vom 19.03.2000.
+  13.03. war ein Katastrophentag
+
+- Es gibt Definitionslisten :: Schema Listeneintrag DOPPELPUNKT Beschreibung
+  - Auch diese werden durch Einrückung verschachtelt :: Untereintrag
+- [-] Ein Todo-Listen-Punkt
+  - [ ] Ein Todo-Listen-Unterpunkt
+  - [X] Ein erledigter Todo-Listen-Unterpunkt
+- [-] Ein Todo-Listen-Punkt mit nummerischem Zähler [1/2]
+  - [ ] Unterpunkt 1
+  - [X] Unterpunkt 2
+- [-] Ein Todo-Listen-Punkt mit prozentualem Zähler [50%]
+  - [ ] Unterpunkt 1 mit einer sehr langen Zeile die leider irgendwann
+    umgebrochen werden muss.
+  - [X] Unterpunkt 2
+  - Ein weiterer Unterpunkt den ich manuell umbreche
+    und in der nächsten Zeile Fortsetze
+
+***** Links
+[[http://www.google.de] [google]]
+***** Kommentare
+# Kommentar 1
+****** COMMENT Kommentar 2
+Hier kommt mein Kommentar
+und die zweite Zeile meines Kommentares
+***** Code
+#+BEGIN_SRC sh
+echo "Hallo Welt"
+#+END_SRC
+***** Datum
+<2014-02-17 Mo>
+***** Tabellen
+| Spalte 1 | Spalte 2 |
+|----------+----------|
+| Zeile 1  | Data1    |
+| Zeile 2  | Data2    |
+
+**** HTML
+***** Doctype
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang= "de">
+
+***** head
+
+<head>
+<meta http-equiv= "Content-Type" content= "text/html; charset=
+utf-8"/>
+
+******* Titel
+
+<title> Org-Struktur in HMTL einrichten </title>
+C
+******* Style
+
+<link type="text/css" rel="stylesheet" href="../style.css" />
+<link type="text/css" rel="stylesheet" href="../grad.css" />
+
+******* Script 
+
+<script type="text/javascript" src="../org.js"></script>
+
+******* Abschluss head
+
+</head>
+
+***** body
+
+<body onload="javascript:start()">
+
+****** Hauptüberschrift
+
+<h1 id="Kopf">Hauptüberschrift<h1>
+
+****** Navi
+
+<div id="Navi">
+<h3>Inhalt</h3>
+<ul>
+<li> <a href="uebersicht.html">&Uuml;bersicht</a></li> 
+<li> <a href = "doctype.html">XHTML-Doctype</a></li>
+<li> <a href = "xhtml-tags.html">Tags</a> </li>
+<li> <a href = "maskieren.html"> Zeichen maskieren</a> </li>
+<li> <a href = "links.html"> Links</a> </li>
+<li> <a href = "css.html"> Styles</a></li>
+</ul>
+</div>
+
+****** Inhalt
+<div id="Inhalt">
+  <p id="javascript">
+    Die &Uuml;bersichtlichkeit dieser Seite wird durch Javascript erh&ouml;ht.
+    Ist dies aktiviert, werden die Texte unter den &Uuml;berschriften durch
+    Anklicken der &Uuml;berschriften ein- und ausgeblendet.
+  </p>
+
+****** Überschrift
+******** 1. Überschrift
+<a class="grad1" onclick="javascript:Sicht('Vorwort');">
+Vorwort
+</a>
+******** folgende Überschriften
+<br/>
+<a class="gradN" onclick="javascript:Sicht(DivID);">
+Überschrift
+</a>
+****** Div-Element
+<div id=DivID name="aus">
+<p>
+Textinhalt 
+</p>
+</div>
+******** Weitere Verschachtlung
+innerhalb des Div-Element eine Folgeüberschrift mit dazugehörigen Div-Element
+
+****** Tabellen
+- Tabellen werden mit 
+ - <table> begonnen
+ - </table> geschlossen
+- Tabellenzeilen werden mit
+ - <tr> begonnen
+ - </tr> geschlossen
+- Spaltentitel werden mit
+ - <th> begonnen
+ - </th> geschlossen
+- Spalteninhalte werden mit
+ - <td> begonnen
+ - </td> geschlossen
+***** Abschluss
+</div>
+</body>
+</html> 
+*** Brainstorm
+**** Variablen
+***** Hauptüberschrift
+Die Hauptüberschrift ergibt sich entweder aus der ersten Zeile,
+wenn diese ohne Struktur-Zeichen steht, oder mit Sternchen beginnt und endet,
+was einem Fettdruck bedeutet
+***** Strukturzeichen
+- ueberschriftZeichen ='* '
+- Grad entspricht der Anzahl der *
+- ListenZeichen = '-'
+- CodeBegin = '#+BEGIN_SRC'
+- CodeEnde = '#+END_SRC'
+- Kommentar 
+  - '#' wenn nicht Code-Begin
+  - '* COMMENT' Überschrift mit ersten Wort 'COMMENT'
+- Links
+  - LinkZeichen= '[['
+  - Link direkt hinter Linkzeichen bis ']'
+  - Linktext hintere Klammer bis ']]'
+- Prioritätszeichen='[#' /Schließt Todo-Liste aus 
+- Tabellenkennzeichen | gefolgt von Text | Text  |
+ 
+***** DivID
+Setzt sich aus der Überschrift ohne Leerzeichen zusammen
+**** Algorythmus
+***** Beschreibung
+****** Lege eine html-Datei mit dem Namen der org-datei und endung html an
+****** Schreibe den Doctyp + den Begin von head als erstes
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+****** Lies die Datei zeilenweise
+****** Teste auf Überschrift
+******* ist das erste Zeichen ein Buchstabe oder folgt dem Stern kein Leerzeichen
+nimm die Zeile als Überschrift und setze sie als Titel
+******* sonst
+Setze den Namen der org-Datei ohne Endung als Titel
+
+****** schreibe die Style- und Script-Bindings und schließe head
+<link type="text/css" rel="stylesheet" href="../style.css" />
+<link type="text/css" rel="stylesheet" href="../grad.css" />
+<script type="text/javascript" src="../org.js"></script>
+
+***** Vereinfachung
+Das schwierigste ist die Erstellung der Überschriften und Inhaltverschaftelung.
+Deshalb will ich mich zunächst darum bemühen und die restlichen Bestandteile
+zunächst außen vor lassen.
+****** Ansatz
+- setze Tab als '  ' # 2xSpace
+- zeilenweises einlesen der org-datei
+- Suche nach '* '
+- Lies Überschrift = Text hinter '* ' aus
+- setze divID aus Überschrift ohne Leerzeichen zusammen
+- fuege divID zu den divIDs hinzu
+- bestimme Grad aus der aus der Anzahl der Sterne
+- Wenn der Grad höher ist als der vorherige
+  - setze a-Element 
+    - </br>
+    - </a class="grad"+str(grad) onclick="javascript:Sicht(divID);">
+    - Schreibe Tab + Überschrift
+    - </a>
+  - setze div-Element
+    - <div id=divID name="aus">
+    - Schreibe Tap + <p>
+    - für alle Zeilen bis zum nächsten Stern:  
+      - Schreibe 2Tab + Zeile
+    - Schreibe Tap + </p>
+- sonst 
+  - schreibe </div> <!-- pop(divIDs) -->
+
+- Wenn Grad gleich Vorgänger :: vorgänger DIV schließen / neues DIV öffnen
+- Wenn Grad größer Vorgänger :: nur neues DIV öffnen
+- Wenn Grad kleiner Vorgänger :: AterGrad-neuerGrad+1 schließende DIV's
+
+****** DONE Einrückungen + Kommentarüberschriften
+Mein Code kann im Moment die Komplett richtige Überschrift-Div Struktur
+mit richtiger Verschachtelung und mit Kommentaren versehen als
+HTML-Datei erstellen.
+- [X] Der resultierende Code ist aber mangels Einrückungen eher unleserlich
+- [X] Im Momment wird eine Überschrift mit dem Schlüsselwort COMMENT übernommen.
+****** DONE Wenn keine Überschriften folgen, werden die Divs nicht geschlossen
+hier muss ich einfach nach dem schließen der Orginal-Datei so tuen als gäbe es eine 
+Überschrift nulltem grades
+
+****** TODO Inhalte Einfügen
+******* TODO Listen
+Listen fangen mit Minuszeichen, gefolgt von Leerzeichen an
+folgt eine Einrückung mit weitern Minuszeichen ist dies ein Unterpunkt
+Alternativ können Listen auch mit Zahlen (1. / 1) ) gekenzeichnet sein.
+Problem: ein Listeneintrag kann über mehrere Zeilen gehen
+Lösung: Geht ein Listenpunkt über mehrere Zeilen so beginnt die
+Nächste Zeile eingerückt an selber Stelle wie der Listenpunkt hinter
+dem Listenzeichen!
+Es sind folgende Listentypen zu unterscheiden
+******** <ul>
+********* Erkennung
+Alle Listen mit 
+- Minus
+- Plus
+- Stern
+
+********* Syntax
+<ul>
+  <li> ...... </li>
+</ul>
+******** <ol>
+********* Erkennung
+Alle Listen mit:
+- Ziffer Punkt
+- Ziffer Klammer
+********* Syntax
+<ol>
+  <li> ...... </li>
+</ol>
+
+******** <dl>
+********* Erkennung
+Alle Listen wie <ul> die zwei Doppelpunkte als Trennung haben.
+
+********* Syntax
+- <dl>
+ - <dt> Term </dt>
+ - <dd> Definition </dd>
+- </dl>
+
+
+* Tests 
+** Eine Überschrift, die einfach viel zu lang für eine einzige Zeile ist und deshalb irgendwann umgebrochen wird, auch wenn Sie dadurch ungewöhnlich lang wird, dies scheint allerdings nicht zu passieren
+eine Überschrift wird och im Autofill-Mode im Emacs nicht
+umgebrochen. Deshalb muss ich mir darüber keine Gedanken machen.
+** Formatierungen
+- *Text* => Text fett => <b>Text</b>
+- !Text! => Text stark => <strong>Text</strong>
+- =Code= => Codeformat=> <code>Code</code>
+- \\Text\\ => Text italic => <i>Text</i>
+- _Text_ => Text unterstrichen => <u>Text</u>
+- +Text+ => Text durchgestrichen => <s>Text</s>
+- ~Text~ => Text hervorgehoben => <em>Text</em>
+*** COMMENT Verstecken
+**** versteckt
+**** interessant
+- eins
+- zwei
+- drei
+** Formatierung über mehrere Zeilen
+
+*Der Text soll fett gedruckt werden
+auch nach dem Umbruch* 
+
+*Beim mannuellen Umbruch hat das nicht funktioniert, wie sieht es
+jetzt beim automatischen Umbruch aus*
+
+*Wenn es sich um einen eigenen Absatz handelt funktioniert der
+ Fettdruck auch im emacs ohne Probleme*
+
+Ein Zeilenumbruch läst im Emachs keine Formatierung zu.
+** Gedanken
+Das Programm könnte so gestaltet werden, das für jede Formatierung ein
+Flag steuert, ob die Formatierung aktiv ist oder nicht. Beim ersten
+auftreten eines Indikators wird das Flag aktiv geschaltet bis entweder
+der Indikator wiederholt vorgefunden wird, oder der Block beendet wird.
+[[ www.google.de  ] [ test   ]]
+
+zu finden im Verzeichnis \\/etc/\\
+
+** COMMENT Das folgende soll keiner wissen
+das hier ist alles total geheim
+Es sol aber in den Kommentaren
+der HTML-Datei stehen
+*** Das ist immer noch ein Kommentar
+Das ist sehr wichtig!
+*sehr wichtig*
+**** Und das erst recht
+fkeg
+*** Was auch noch Kommentiert werden muss
+!Soll auch nicht auf der Seite angezeigt werden!
+** hier geht es weiter
+# Das ist eine einzelne Kommentarzeile
+alles unter dem Text im Bereich ** Gedanken "zu finden im Verzeichnis
+\\/etc/\\ bis hier her ist auskommentiert.
+** COMMENT Konvertierungseinstellungen
+#+ZIEL_DATEI : /home/maik/Dokumente/workspace/html/myPage/html-lernen/html-maker
+#+NAVI_LINK : ../index.html : Home
+#+NAVI_LINK : ../Maiks Blog/emacs.html : emacs
+#+NAVI_LINK : org-struktur.html : org-Sstruktur
+#+DOC_HEADLINE : Versuch
+#+DOC_TITEL : HTML einfach
+#+PFAD_SCRIPT : ../org.js
+#+PFAD_CSS : ../style.css
+#+PFAD_CSS : ../grad.css
+#+TOC: 3
+
+* Ergänzung
+** COMMENT Fertig
+jetzt ist Schluß

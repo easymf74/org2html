@@ -1,0 +1,117 @@
+html {
+    padding: 0;
+  }
+
+
+body{/*font-family: Verenda, Geneva, Arial, sans-serif;*/
+	 background-color: silver;
+	 min-width: 40em; /* Mindestbreite verhindert Anzeigefehler in modernen Browsern */
+	 color: green;
+	 font-size: medium;
+	 margin: 0; 
+	 padding: 0;
+	 }
+	 
+li{color:Blue;}
+
+.Klasse1 { background-color: gray;
+			color: maroon;}
+.serif { font-family: sans-serif; }			
+.verdana { font-family: Verdana; }
+.geneva { font-family: Geneva; }
+.arial {font-family: Arial; }
+.andale {font-family: Andale Mono;}
+.arialBlack {font-family: Arial Black;}
+.comicSans {font-family: Comic Sans;}
+.courierNew {font-family: Courier New;}
+.georgia {font-family: Georgia;}
+.impact {font-family: Impact;}
+.timesNewRoman {font-family: Times New Roman;}
+.trebuchetMS {font-family: Trebuchet MS;}
+
+.gr10 {font-size: 10px;}
+.gr11 {font-size: 11px;}
+.gr14 {font-size: 14px;}
+.gr20 {font-size: 20px;}
+
+
+.aqua {background-color: Aqua;}
+.black {background-color: Black;}
+.blue {	background-color: Blue;}
+.fuchsia { background-color: Fuchsia;}
+.gray { background-color: Gray;}
+.green {background-color: Green;}
+.lime { background-color: Lime;}
+.maroon { background-color: Maroon;}
+.navy { background-color: Navy;}
+.olive {background-color: Olive;}
+.orange {background-color: Orange;}
+.purple {background-color: Purple;}
+.red {background-color: Red;}
+.silver {background: Silver;}
+.teal {background-color: Teal;}
+.white {background-color: White;}
+.yellow { background-color: Yellow;}
+
+.dark {color: White;}
+			
+h1{ font-size:  170%;}
+h2{font-size:130%}
+h6{text-decoration: underline;}
+a:hover {
+	  /*text-transform: uppercase;*/
+	  font-weight:bold;
+	  color:blue;
+	  background-color:yellow;
+	  
+	}
+
+		
+#Kopf { text-align: center;
+		color: Maroon;}		
+
+/*#Inhaltsverzeichnis {
+					border-style: dotted;
+					border-color: teal;
+					width: 200;
+					float: left;}	
+/*fixiertes Inhaltsverzeichnis*/					
+#Navi {
+					/*position: absolute;
+					/*top: 1.8em; left: 1em;*/
+					position: fixed;
+					width: 250px;
+					border-style: dotted;
+					border-color: teal;
+					font-size:14px;
+					}
+					
+#Navi h3 { text-align: center;
+						 color: Maroon;
+						 text-decoration: underline;}
+						 
+						
+#Inhalt {
+		 margin-left: 300px;
+							}
+#Navi ul {
+				padding: 15px;
+				}
+							
+#Navi li{
+			width: 200px;
+			/*padding: 2px;
+			margin:  2px;*/	
+			list-style-position: outside;
+		}
+
+pre {
+		Display: block;
+		background-color:Teal;
+		color:black;
+		font-style: italic;
+	  width:550px; 
+		max-height: 30em;
+		position : absolut; 
+		overflow : auto;
+	}

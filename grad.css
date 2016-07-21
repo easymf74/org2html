@@ -1,0 +1,52 @@
+.grad1
+{
+border-bottom: 2px solid black;
+font-size: 2em;
+font-weight:bold;
+color: black;
+}
+.grad2 {
+border-bottom: 2px solid navy;
+font-size: 1.8em;
+color: navy;
+}
+.grad3 {
+border-bottom: 2px solid blue;
+font-size: 1.6em
+font-weight:normal;
+color: blue;
+}
+.grad4 {
+border-bottom: 2px solid green;
+font-size: 1.4em;
+color: green;
+}
+.grad5 {
+border-bottom: 1px solid maroon;
+font-size: 1.2em;
+color: maroon;
+}
+.grad6 {
+border-bottom: 1px solid purple;
+font-size: 1.2em;
+color: purple;
+}
+.grad7 {
+border-bottom: 1px dashed yellow;
+font-size: 1.2em;
+color: yellow;
+}
+.grad8 {
+border-bottom: 1px dashed teal;
+font-weight:bold;
+color: teal;}
+.grad9 {
+border-bottom: 1px dotted olive;
+font-style:oblique;
+color: olive;
+}
+.grad10 {
+border-bottom: 1px dotted aqua;
+letter-spacing:0.3em;
+color: aqua;
+}
