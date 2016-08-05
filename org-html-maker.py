@@ -1334,6 +1334,7 @@ for Quelle in Quellen:
 			puffer.append(tab*' '+mkComment(orgZeile)+'\n')
 			kGrad=anzahlSterne(orgZeile)
 			KommentarBlock=True
+			schliessen(LISTE+TABELLE+ABSATZ)
 		elif KommentarBlock and not ueberschrift and not isSetting(orgZeile, einstellen=False):
 			puffer.append(tab*' '+mkComment(orgZeile)+'\n')
 		elif ueberschrift:
